@@ -1,17 +1,8 @@
-import random
-import json
+from mechanics import Character_Creator
+from mechanics import loot_drops
 
-with open('data/class.json', 'r') as f:
-    classes = json.load(f)
+player = Character_Creator()
 
-with open("data/enemies.json", "r") as f:
-    enemies = json.load(f)
-
-print(classes["Mage"]["hp"])
-
-rarity_chances = {
-    "common" : 65,
-    "uncommon" : 23,
-    "rare" : 7,
-    "Legendary" : 5
-}
+for i in range(20):
+    rarity, item = loot_drops()
+    print(f"{rarity.upper()} -> {item}") 

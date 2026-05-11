@@ -1,0 +1,7 @@
+{
+    "name": "Danish",
+    "class": "Barbarian",
+    "hp": 19,
+    "att": 6,
+    "skill": "rage"
+}
