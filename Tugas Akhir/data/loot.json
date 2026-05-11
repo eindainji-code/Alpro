@@ -1,0 +1,31 @@
+{
+    "common": [
+        "nearly broken staff", 
+        "worn-out shield", 
+        "flimsy sword", 
+        "straight-limb longbow", 
+        "bandage"
+    ],
+    "uncommon": [
+        "oak staff",
+        "bronze sword",
+        "copper shield",
+        "un-power bow",
+        "syringe"
+    ],
+    "rare" : [
+        "Buloke staff",
+        "Steel sword",
+        "Roman Scutum",
+        "Power bow",
+        "Potion"
+    ],
+
+    "Legendary" : [
+        "Adams staff",
+        "Diamond sword",
+        "Americanized shield",
+        "Artemis's Bow",
+        "Witches Brew"
+    ] 
+}

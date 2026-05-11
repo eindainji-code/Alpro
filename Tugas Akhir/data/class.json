@@ -1,0 +1,6 @@
+{
+    "Mage": {"hp": 18, "att" : 7, "skill" : "fireball"},
+    "Barbarian": {"hp": 19, "att": 6, "skill" : "rage"},
+    "Knight" : {"hp": 23, "att": 2, "skill" : "protect"},
+    "Archer" : {"hp": 16, "att": 9, "skill" : "critical shot"}
+}
