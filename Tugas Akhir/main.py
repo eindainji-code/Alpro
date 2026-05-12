@@ -1,8 +1,6 @@
-from mechanics import Character_Creator
-from mechanics import loot_drops
+import mechanics as m
 
-player = Character_Creator()
+player = m.Character_Creator() # test untuk membuat karakter
 
-for i in range(20):
-    rarity, item = loot_drops()
-    print(f"{rarity.upper()} -> {item}") 
+m.loot_drops()
+m.inventory()

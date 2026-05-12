@@ -1,7 +1,7 @@
 {
-    "Slime": {"hp": 10, "att": 3},
-    "Wolf": {"hp": 12, "att": 4},
-    "Zombie": {"hp": 14, "att": 5},
-    "Skeleton": {"hp": 12, "att": 7},
-    "Skog" : {"hp": 40, "att": 10} 
+    "Slime": {"hp": 10, "atk": 3},
+    "Wolf": {"hp": 12, "atk": 4},
+    "Zombie": {"hp": 14, "atk": 5},
+    "Skeleton": {"hp": 12, "atk": 7},
+    "Skog" : {"hp": 40, "atk": 10} 
 }
