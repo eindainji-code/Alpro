@@ -3,7 +3,7 @@ import json
 import os
 import time
 
-with open('data/class.json', 'r') as f: 
+with open('data/classes.json', 'r') as f: 
     classes = json.load(f)
 
 with open("data/enemies.json", "r") as f:
@@ -19,22 +19,28 @@ rarity_chances = {
     "Legendary" : 5
 }
 
-player = { #DICTIONARY/HASH TABLE
-    "name": "",
-    "class": "",
-    "hp": 0,
-    "max_hp": 0,
-    "atk": 0,
-    "def": 0,
-    "skill": 0,
-    "level": 1,
-    "exp": 0,
-    "inventory": [] #LIST
-}
 
-def Character_Creator():
-    nama = input("Masukkan nama: ")
+def Character_Creator(name, chosen_class):
+    data = classes[chosen_class]
+
+    player = {
+        "name": name,
+        "class": chosen_class,
+        "hp": data["hp"],
+        "max_hp": data["hp"],
+        "atk": data["atk"],
+        "def": data["def"],
+        "skill": data["skill"],
+        "inventory": []
+    }
+
+    return player
+
+def Choosing():
+
     clear_terminal()
+
+    nama = input("Masukkan nama: ")
 
     print("=== ALL CHARACTERS ===\n")
 
@@ -56,24 +62,17 @@ def Character_Creator():
         time.sleep(1)
         return
     
-    data = classes[choice]
-    player["name"] = nama
-    player["class"] = choice
-    player["hp"] = data["hp"]
-    player["max_hp"] = data["hp"]
-    player["atk"] = data["atk"]
-    player["def"] = data["def"]
-    player["skill"] = data["skill"]
-
     print(f"\nSuccesfully selected {choice}!")
     time.sleep(1)
 
-    with open("data/player.json", "w") as f:
-        json.dump(player, f, indent= 4)
+    player = Character_Creator(nama, choice)
+
+    save_player(player)
 
     return player
 
-def loot_drops():
+
+def loot_drops(player):
     chosen_rarity = random.choices(
         list(rarity_chances.keys()),
         weights=rarity_chances.values()
@@ -86,10 +85,10 @@ def loot_drops():
     print(f"\nYou got an item!: ")
     print(f"{item} [{chosen_rarity.upper()}]")
     time.sleep(1)
+    save_player(player)
 
-def enemy_action(enemies):
+def enemy_action(enemy_name):
 
-    enemy_name = enemies["name"]
     if enemy_name == "Zombie":
         actions = [
         "attack",
@@ -148,7 +147,7 @@ def loading():
 
     print()
 
-def stats():
+def stats(player):
     clear_terminal()
 
     print("=== PLAYER INFO ===")
@@ -163,7 +162,7 @@ def stats():
 
     print("\nPress ENTER to go back.")
 
-def inventory():
+def inventory(player):
     clear_terminal()
 
     print("=== INVENTORY ===")
@@ -177,3 +176,8 @@ def inventory():
             number += 1
 
     print("\nPress ENTER to go back.")
+
+def save_player(player):
+
+    with open("data/player.json", "w") as f:
+        json.dump(player, f, indent=4)

@@ -1,6 +1,10 @@
+import json
 import mechanics as m
 
-player = m.Character_Creator() # test untuk membuat karakter
 
-m.loot_drops()
-m.inventory()
+player = m.Choosing() # test untuk membuat karakter
+
+m.loot_drops(player)
+m.inventory(player)
+
+m.enemy_action("Zombie")

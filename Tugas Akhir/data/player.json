@@ -6,7 +6,7 @@
     "atk": 9,
     "def": 3,
     "skill": "critical shot",
-    "level": 1,
-    "exp": 0,
-    "inventory": []
+    "inventory": [
+        "nearly broken staff"
+    ]
 }
