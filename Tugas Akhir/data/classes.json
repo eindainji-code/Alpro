@@ -1,6 +1,6 @@
 {
-    "Mage": {"hp": 18, "atk" : 7, "def": 2, "skill" : "fireball"},
-    "Barbarian": {"hp": 19, "atk": 6, "def": 5, "skill" : "rage"},
-    "Knight" : {"hp": 20, "atk": 5, "def": 9, "skill" : "protect"},
-    "Archer" : {"hp": 16, "atk": 9, "def": 3, "skill" : "critical shot"}
+    "Mage": {"hp": 20, "atk" : 7, "def": 3, "skill" : "fireball"},
+    "Barbarian": {"hp": 21, "atk": 5, "def": 4, "skill" : "rage"},
+    "Knight" : {"hp": 22, "atk": 3, "def": 5, "skill" : "protect"},
+    "Archer" : {"hp": 20, "atk": 8, "def": 2, "skill" : "critical shot"}
 }

@@ -1,7 +1,27 @@
 {
-    "Slime": {"hp": 10, "atk": 3},
-    "Wolf": {"hp": 12, "atk": 4},
-    "Zombie": {"hp": 14, "atk": 5},
-    "Skeleton": {"hp": 12, "atk": 7},
-    "Skog" : {"hp": 40, "atk": 10} 
+    "tier_1": {
+        "Slime": {"hp": 14, "atk": 4, "def": 2},
+        "Goblin": {"hp": 12, "atk": 5, "def": 3},
+        "Gnome" : {"hp": 13, "atk": 2, "def": 5}
+    },
+
+    "tier_2": {
+        "Wolf": {"hp": 21, "atk": 10, "def": 9},
+        "Zombie": {"hp": 23, "atk": 6, "def": 11},
+        "Skeleton": {"hp": 19, "atk": 15, "def": 6}
+    },
+    "tier_3": {
+        "Laistrygonian": {"hp": 33, "atk": 14, "def": 13},
+        "Centaur" : {"hp": 29, "atk": 17, "def": 14},
+        "Troll": {"hp": 35, "atk": 10, "def": 15}
+    },
+    "boss": {
+        "Minotaur": {"hp": 40, "atk": 20, "def": 20},
+        "Nemean Lion": {"hp": 45, "atk": 10, "def": 15},
+        "Basilisk": {"hp": 37, "atk": 30, "def": 13}
+    },
+    "final_boss": {
+        "Dragon": {"hp": 50, "atk": 25, "def": 25},
+        "Fenrir": {"hp": 45, "atk": 35, "def": 20}
+    }
 }

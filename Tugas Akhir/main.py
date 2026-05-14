@@ -3,8 +3,10 @@ import mechanics as m
 
 
 player = m.Choosing() # test untuk membuat karakter
-
-m.loot_drops(player)
-m.inventory(player)
-
-m.enemy_action("Zombie")
+enemy = {
+    "name": "Skog",
+    "hp": 50,
+    "atk": 20,
+    "def": 10
+}
+m.battle(player,enemy)
