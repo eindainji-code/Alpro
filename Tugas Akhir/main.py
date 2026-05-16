@@ -1,12 +1,10 @@
 import json
 import mechanics as m
+import screen as s
 
+with open("data/enemies.json", "r") as f:
+    enemies = json.load(f) # mengambil data dalam enemies.json
 
-player = m.Choosing() # test untuk membuat karakter
-enemy = {
-    "name": "Skog",
-    "hp": 50,
-    "atk": 20,
-    "def": 10
-}
-m.battle(player,enemy)
+s.main_menu()
+enemy = enemies["tier_1"]["Slime"].copy()
+enemy["name"] = "Slime"
