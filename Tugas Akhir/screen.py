@@ -72,14 +72,14 @@ def main_menu():
             player = Choosing()
 
             print(f"\nWelcome {player["name"]}")
-            break
+            return player
 
         if choice == 2:
             player = m.load_player()
 
             if player:
                 print(f"\nLoaded {player["name"]}")
-                break
+                return player
 
         if choice == 3:
             print("\nGoodbye")

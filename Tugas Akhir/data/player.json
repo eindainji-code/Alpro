@@ -1,15 +1,17 @@
 [
     {
         "name": "Danish",
-        "class": "Archer",
-        "hp": 20,
-        "max_hp": 20,
-        "atk": 8,
-        "def": 2,
-        "skill": "critical shot",
+        "class": "Knight",
+        "hp": 9,
+        "max_hp": 22,
+        "atk": 3,
+        "def": 5,
+        "skill": "protect",
         "character_level": 1,
         "exp": 0,
         "floor": 1,
-        "inventory": []
+        "inventory": [
+            "worn-out shield"
+        ]
     }
 ]
