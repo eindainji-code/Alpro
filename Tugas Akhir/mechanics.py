@@ -109,23 +109,23 @@ def save_player(player): # fungsi save
 def battle(player,enemy): # fungsi perlawanan
     print("\n=== Battle Start ===\n")
     time.sleep(0.25)
-    enemy_defending = False
-    enemy_dodging = False
+    enemy_defending = False # boolean mengecek jika musuh lagi defend
+    enemy_dodging = False # boolean mengecek jika musuh lagi dodging
 
     while player["hp"] > 0 and enemy["hp"] > 0: # loop while untuk mengecek jika player atau enemy masih hidup
 
         print(f"{player["name"]}'s Turn")
-        enemy_def = enemy["def"]
+        enemy_def = enemy["def"] # variabel untuk defense musuh
 
-        if enemy_defending:
-            enemy_def = int(enemy_def * 1.5)
+        if enemy_defending: # jika enemy lagi defending
+            enemy_def = int(enemy_def * 1.5) # defensenya dikali 1.5
 
-        damage = player['atk'] - enemy_def
+        damage = player['atk'] - enemy_def # lalu damagenya adalah jumlah atk dari player - def enemy
 
         if damage < 1:
             damage = 1
 
-        enemy["hp"] -= damage
+        enemy["hp"] -= damage # hp enemy akan dikurangi damage
 
         print(f"{player["name"]}'s attacks!")
         print(f"{enemy["name"]} takes {damage} damage!")
@@ -137,21 +137,21 @@ def battle(player,enemy): # fungsi perlawanan
         print(f"{enemy['name']} HP: {enemy['hp']}\n")
         time.sleep(1)
 
-        if enemy["hp"] <= 0:
+        if enemy["hp"] <= 0: # jika hp enemy 0 atau kurang
 
-            print(f"{enemy['name']} was defeated!")
+            print(f"{enemy['name']} was defeated!") # maka enemy mati
 
-            loot_drops(player)
+            loot_drops(player) # memanggil drops
 
-            save_player(player)
+            save_player(player) # dan save game
 
             break
 
         print(f"{enemy['name']}'s Turn")
 
-        action = enemy_action(enemy["tier"])
+        action = enemy_action(enemy["tier"]) # turn enemy
 
-        print(f"{enemy['name']} used {action}!")
+        print(f"{enemy['name']} used {action}!") 
 
         time.sleep(1)
 
