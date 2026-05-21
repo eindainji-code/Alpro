@@ -64,7 +64,8 @@ def main_menu():
         print("=== MAIN MENU ===")
         print("1. New Game")
         print("2. Load Game")
-        print("3. Exit")
+        print("3. Leaderboard")
+        print("4. Exit")
 
         choice = int(input("Please choose: "))
 
@@ -80,8 +81,14 @@ def main_menu():
             if player:
                 print(f"\nLoaded {player["name"]}")
                 return player
-
+            
         if choice == 3:
+            import leaderboard as lb
+            players = lb.load_players()
+            lb.display_leaderboard(players)
+            input("\nPress ENTER to go back.")
+
+        if choice == 4:
             print("\nGoodbye")
             exit()
 
