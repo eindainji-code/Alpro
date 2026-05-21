@@ -85,7 +85,7 @@ def main_menu():
         if choice == 3:
             import leaderboard as lb
             players = lb.load_players()
-            lb.display_leaderboard(players)
+            lb.display_lb(players)
             input("\nPress ENTER to go back.")
 
         if choice == 4:

@@ -104,24 +104,33 @@ def display_lb(players: list, merge_sort: bool = False):
         sorted_pl = lb_insertion(players)
         algo_name = "Insertion Sort"
 
-    print("\n" + "=" * 55)
-    print(f"{'LEADERBOARD':^55}")
-    print(f"{'(Sorted with ' + algo_name + ')':^55}")
-    print("=" * 55)
-    print(f"{'RANK':<6} {'NAMA':<12} {'CLASS':<12} {'FLOOR':<8} {'LVL':<6} {'EXP'}")
-    print("-" * 55)
+    print("\n" + "=" * 62)
+    print(f"{'LEADERBOARD':^62}")
+    print(f"{'(Sorted with ' + algo_name + ')':^62}")
+    print("=" * 62)
+    print(
+    f"{'TITLE':<10}"
+    f"{'RANK':<6}"
+    f"{'NAMA':<13}"
+    f"{'CLASS':<13}"
+    f"{'FLOOR':<9}"
+    f"{'LVL':<7}"
+    f"{'EXP':<7}"
+)
+    print("-" * 62)
 
     best_pl = {1: "GOAT", 2: "AMAZING", 3: "NICE"}
 
     for rank, player in enumerate(sorted_pl, start=1):
         best = best_pl.get(rank, "  ")
         print(
-            f"{best} {rank:<4} "
-            f"{player.get('name', '?'):<12} "
-            f"{player.get('class', '?'):<12} "
-            f"{player.get('floor', 1):<8} "
-            f"{player.get('character_level', 1):<6} "
-            f"{player.get('exp', 0)}"
+            f"{best:<10}"
+            f"{rank:<6}"
+            f"{player.get('name', '?'):<13}"
+            f"{player.get('class', '?'):<13}"
+            f"{player.get('floor', 1):<9}"
+            f"{player.get('character_level', 1):<7}"
+            f"{player.get('exp', 0):<7}"
         )
 
-    print("=" * 55)
+    print("=" * 62)

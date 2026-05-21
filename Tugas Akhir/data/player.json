@@ -13,5 +13,20 @@
         "inventory": [
             "worn-out shield"
         ]
+    },
+    {
+        "name": "Farah",
+        "class": "Mage",
+        "hp": 16,
+        "max_hp": 20,
+        "atk": 7,
+        "def": 3,
+        "skill": "fireball",
+        "character_level": 4,
+        "exp": 25,
+        "floor": 10,
+        "inventory": [
+            "straight-limb longbow"
+        ]
     }
 ]
