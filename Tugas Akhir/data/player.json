@@ -1,17 +1,20 @@
 [
     {
         "name": "Danish",
-        "class": "Knight",
-        "hp": 9,
-        "max_hp": 22,
-        "atk": 3,
-        "def": 5,
-        "skill": "protect",
+        "class": "Barbarian",
+        "hp": 0,
+        "max_hp": 21,
+        "atk": 5,
+        "def": 4,
+        "skill": "rage",
         "character_level": 1,
         "exp": 0,
-        "floor": 1,
+        "floor": 4,
         "inventory": [
-            "worn-out shield"
+            "flimsy sword",
+            "worn-out shield",
+            "worn-out shield",
+            "nearly broken staff"
         ]
     },
     {

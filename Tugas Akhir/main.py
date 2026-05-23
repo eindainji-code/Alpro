@@ -1,10 +1,11 @@
 import json
 import mechanics as m
 import screen as s
+import leaderboard as lb
+import battle as b
+import floors as fl
 
-with open("data/enemies.json", "r") as f:
-    enemies = json.load(f) # mengambil data dalam enemies.json
-
+history = b.ActionHistory()
+root = fl.generate_tree(1,5)
 player = s.main_menu()
-enemy = m.create_enemy("tier_1", "Goblin")
-m.battle(player, enemy)
+fl.floor_system(player,root,history)
