@@ -3,6 +3,7 @@ import json
 import os
 import time
 import screen as s
+import inventory as inv
 
 with open('data/classes.json', 'r') as f: 
     classes = json.load(f) # mengambil data dalam classes.json
@@ -20,7 +21,7 @@ rarity_chances = {
     "Legendary" : 5
 } # digunakan untuk peluang mendapatkan sebuah item berdasarkan rarity
 
-def loot_drops(player): # fungsi untuk barang yang jatuh dari enemy
+def loot_drops(inventory): # fungsi untuk barang yang jatuh dari enemy
     chosen_rarity = random.choices( # menggunakan random untuk membuat variabel chosen_rarity yaitu memilih satu rarity menggunakan weight
         list(rarity_chances.keys()), # mengambil semua keys dalam rarity_chances "common", "uncommon", dst dan membuat menjadi list
         weights=rarity_chances.values() # mengambil value dari rarity_chances dan membuatnya menjadi persen beban
@@ -28,12 +29,11 @@ def loot_drops(player): # fungsi untuk barang yang jatuh dari enemy
 
     item = random.choice(loot[chosen_rarity]) # membuat variabel item yang menggunakan random lagi akan mengambil loot random berdasarkan rarity diatas
 
-    player["inventory"].append(item) # item akan diappend ke inventory player
+    inventory.add_item(item) # item akan diappend ke inventory player
 
     print(f"\nYou got an item!: ")
-    print(f"{item} [{chosen_rarity.upper()}]")
+    print(f"{item} [{chosen_rarity.upper()}]\n")
     time.sleep(1)
-    save_player(player) # save player
 
 def enemy_action(enemy_level): # fungsi untuk aksi yang akan dilaksanakan oleh musuh
 
@@ -106,116 +106,50 @@ def save_player(player): # fungsi save
     with open(file_path, "w") as f:
         json.dump(players, f, indent=4)
 
-def battle(player,enemy): # fungsi perlawanan
-    print("\n=== Battle Start ===\n")
-    time.sleep(0.25)
-    enemy_defending = False # boolean mengecek jika musuh lagi defend
-    enemy_dodging = False # boolean mengecek jika musuh lagi dodging
-
-    while player["hp"] > 0 and enemy["hp"] > 0: # loop while untuk mengecek jika player atau enemy masih hidup
-
-        print(f"{player["name"]}'s Turn")
-        enemy_def = enemy["def"] # variabel untuk defense musuh
-
-        if enemy_defending: # jika enemy lagi defending
-            enemy_def = int(enemy_def * 1.5) # defensenya dikali 1.5
-
-        damage = player['atk'] - enemy_def # lalu damagenya adalah jumlah atk dari player - def enemy
-
-        if damage < 1:
-            damage = 1
-
-        enemy["hp"] -= damage # hp enemy akan dikurangi damage
-
-        print(f"{player["name"]}'s attacks!")
-        print(f"{enemy["name"]} takes {damage} damage!")
-        time.sleep(0.25)
-
-        if enemy["hp"] < 0:
-            enemy["hp"] = 0
-
-        print(f"{enemy['name']} HP: {enemy['hp']}\n")
-        time.sleep(1)
-
-        if enemy["hp"] <= 0: # jika hp enemy 0 atau kurang
-
-            print(f"{enemy['name']} was defeated!") # maka enemy mati
-
-            loot_drops(player) # memanggil drops
-
-            save_player(player) # dan save game
-
-            break
-
-        print(f"{enemy['name']}'s Turn")
-
-        action = enemy_action(enemy["tier"]) # turn enemy
-
-        print(f"{enemy['name']} used {action}!") 
-
-        time.sleep(1)
-
-        if action == "attack":
-
-            damage = enemy["atk"] - player["def"]
-
-            if damage < 1:
-                damage = 1
-
-            player["hp"] -= damage
-
-            if player["hp"] < 0:
-                player["hp"] = 0
-
-            print(f"{player['name']} takes {damage} damage!")
-
-        elif action == "defend":
-            enemy_defending = True
-
-            print(f"{enemy["name"]} is Defending")
-
-
-        elif action == "dodge":
-
-            print(f"{enemy['name']} dodged!")
-
-        elif action == "skill":
-
-            skill_damage = enemy["atk"] * 2
-
-            player["hp"] -= skill_damage
-
-            print(f"{enemy['name']} used their skill!")
-            print(f"{player['name']} takes {skill_damage} damage!")
-
-        print(f"{player['name']} HP: {player['hp']}\n")
-
-        time.sleep(1)
-
-        # CHECK IF PLAYER DIED
-        if player["hp"] <= 0:
-
-            print(f"{player['name']} was defeated...")
-            save_player(player)
-            break
-
 def load_player():
 
     if not os.path.exists("data/player.json"):
+
         print("\nNo save file found!")
+
         return None
 
     with open("data/player.json", "r") as f:
+
         players = json.load(f)
 
-    # load first player for now
-    return players[0]
+    # show all players
+    print("\n=== SAVED PLAYERS ===\n")
 
-def create_enemy(tier, enemy_name):
+    for i, player in enumerate(players, start=1):
 
-    enemy = enemies[tier][enemy_name].copy()
+        print(
+            f"{i}. "
+            f"{player['name']} | "
+            f"{player['class']} | "
+            f"Floor: {player['floor']}"
+        )
 
-    enemy["name"] = enemy_name
-    enemy["tier"] = tier
+    # choose player
+    choice = int(input("\nChoose Save: "))
 
-    return enemy
+    # validate
+    if choice < 1 or choice > len(players):
+
+        print("\nInvalid save!")
+
+        return None
+
+    # selected player
+    player = players[choice - 1]
+
+    # dead player check
+    if player["hp"] <= 0:
+
+        print("\nCharacter is dead!")
+
+        return None
+
+    print(f"\nLoaded {player['name']}!")
+
+    return player

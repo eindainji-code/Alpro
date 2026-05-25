@@ -5,14 +5,13 @@ import battle as b
 import mechanics as m
 
 
-# LOAD ENEMIES
 with open("data/enemies.json", "r") as f:
 
     enemies = json.load(f)
 
-# FLOOR NODE (TREE NODE)
-class FloorNode:
-    def __init__(self, floor_num, tier):
+#fungsi untuk lantai-lantai dan memilihnya menggunakan tree
+class FloorNode: # node lantai
+    def __init__(self, floor_num, tier): # masuknya nomor lantai dan tier lantai
 
         self.floor_num = floor_num
         self.tier = tier
@@ -20,42 +19,34 @@ class FloorNode:
         self.left = None
         self.right = None
 
+# fungsi membuat tree secara rekursif
+def generate_children(node):
 
-
-# GENERATE TREE RECURSIVELY
-def generate_tree(current_floor, max_floor):
-
-    # base case
-    if current_floor > max_floor:
-        return None
+    next_floor = node.floor_num + 1
 
     # tier scaling
-    if current_floor <= 3:
+    if next_floor <= 10:
+
         tier = "tier_1"
 
-    elif current_floor <= 6:
+    elif next_floor <= 20:
+
         tier = "tier_2"
 
     else:
+
         tier = "boss"
 
-    # create node
-    node = FloorNode(current_floor, tier)
+    # create ONLY 2 next floors
+    node.left = FloorNode(next_floor, tier)
 
-    # recursive calls
-    node.left = generate_tree(current_floor + 1, max_floor)
+    node.right = FloorNode(next_floor, tier)
 
-    node.right = generate_tree(current_floor + 1, max_floor)
-
-    return node
-
-# =========================
 # FLOOR TRAVERSAL
-# =========================
+def floor_system(player, root,history,inventory):# sistem lantai 
 
-def floor_system(player, root,history):
-    history = b.ActionHistory()
     current_floor = root
+    path_taken = []
 
     while current_floor and player["hp"] > 0:
 
@@ -65,14 +56,16 @@ def floor_system(player, root,history):
         print("=" * 40)
 
         # generate enemy
-        enemy = b.random_enemy(current_floor.tier)
+        enemy = b.random_enemy(current_floor.tier) # mengambil musuh acak
 
         # start battle
-        survived = history.battle(player, enemy)
+        survived = history.battle(player, enemy, inventory)
+        print("Battle function returned!")
+        print(f"{enemy['name']} defeated!")
 
         #player survives
-        if survived:
-            player["floor"] += 1
+        if survived: #jika player hidup 
+            player["floor"] += 1 # lantainya di .json +1
             m.save_player(player)
 
         # player died
@@ -80,10 +73,10 @@ def floor_system(player, root,history):
             break
 
         # final floor
+# generate next floors dynamically
         if current_floor.left is None and current_floor.right is None:
 
-            print("\nDungeon Cleared!")
-            break
+            generate_children(current_floor)
 
         # choose path
         print("\nChoose Path:")
@@ -94,9 +87,17 @@ def floor_system(player, root,history):
 
         if choice == "1":
 
+            path_taken.append(
+                f"Floor {current_floor.floor_num} -> Left"
+            )
+
             current_floor = current_floor.left
 
         elif choice == "2":
+
+            path_taken.append(
+                f"Floor {current_floor.floor_num} -> Right"
+            )
 
             current_floor = current_floor.right
 
@@ -105,6 +106,10 @@ def floor_system(player, root,history):
             print("\nInvalid!")
             break
 
+    print("\n=== PATH TAKEN ===")
+
+    for path in path_taken:
+        print(path)
 
 
 

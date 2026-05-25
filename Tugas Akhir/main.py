@@ -4,8 +4,16 @@ import screen as s
 import leaderboard as lb
 import battle as b
 import floors as fl
+import inventory as inv
 
 history = b.ActionHistory()
-root = fl.generate_tree(1,5)
+
 player = s.main_menu()
-fl.floor_system(player,root,history)
+
+root = fl.FloorNode(player["floor"], "tier_1")
+
+inventory = inv.Inventory()
+for item in player["inventory"]:
+    inventory.add_item(item,False)
+
+fl.floor_system(player,root,history,inventory)

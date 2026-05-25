@@ -1,35 +1,22 @@
 [
     {
         "name": "Danish",
-        "class": "Barbarian",
-        "hp": 0,
-        "max_hp": 21,
-        "atk": 5,
-        "def": 4,
-        "skill": "rage",
+        "class": "Test",
+        "hp": 100,
+        "max_hp": 100,
+        "atk": 100,
+        "def": 100,
+        "skill": "Stupid strong",
         "character_level": 1,
         "exp": 0,
-        "floor": 4,
+        "floor": 7,
         "inventory": [
-            "flimsy sword",
-            "worn-out shield",
-            "worn-out shield",
-            "nearly broken staff"
-        ]
-    },
-    {
-        "name": "Farah",
-        "class": "Mage",
-        "hp": 16,
-        "max_hp": 20,
-        "atk": 7,
-        "def": 3,
-        "skill": "fireball",
-        "character_level": 4,
-        "exp": 25,
-        "floor": 10,
-        "inventory": [
-            "straight-limb longbow"
+            "Worn-out Shield",
+            "Worn-out Shield",
+            "Flimsy Sword",
+            "Copper Shield",
+            "Bandage",
+            "Bronze Sword"
         ]
     }
 ]
