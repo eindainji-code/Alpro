@@ -1,27 +1,27 @@
 {
     "tier_1": {
-        "Slime": {"hp": 14, "atk": 4, "def": 2},
-        "Goblin": {"hp": 12, "atk": 5, "def": 3},
-        "Gnome" : {"hp": 13, "atk": 2, "def": 5}
+        "Slime": {"hp": 20, "atk": 10, "def": 4, "exp": 20},
+        "Goblin": {"hp": 18, "atk": 11, "def": 5, "exp": 20},
+        "Gnome" : {"hp": 21, "atk": 8, "def": 7, "exp": 20}
     },
 
     "tier_2": {
-        "Wolf": {"hp": 21, "atk": 10, "def": 9},
-        "Zombie": {"hp": 23, "atk": 6, "def": 11},
-        "Skeleton": {"hp": 19, "atk": 15, "def": 6}
+        "Wolf": {"hp": 25, "atk": 18, "def": 17, "exp": 50},
+        "Zombie": {"hp": 32, "atk": 8, "def": 20, "exp": 50}, 
+        "Skeleton": {"hp": 23, "atk": 27, "def": 10, "exp": 50}
     },
     "tier_3": {
-        "Laistrygonian": {"hp": 33, "atk": 14, "def": 13},
-        "Centaur" : {"hp": 29, "atk": 17, "def": 14},
-        "Troll": {"hp": 35, "atk": 10, "def": 15}
+        "Laistrygonian": {"hp": 33, "atk": 14, "def": 13, "exp": 100},
+        "Centaur" : {"hp": 29, "atk": 17, "def": 14, "exp": 100},
+        "Troll": {"hp": 35, "atk": 10, "def": 15, "exp": 100}
     },
     "boss": {
-        "Minotaur": {"hp": 40, "atk": 20, "def": 20},
-        "Nemean Lion": {"hp": 45, "atk": 10, "def": 15},
-        "Basilisk": {"hp": 37, "atk": 30, "def": 13}
+        "Minotaur": {"hp": 40, "atk": 20, "def": 20, "exp": 200},
+        "Nemean Lion": {"hp": 45, "atk": 10, "def": 15, "exp": 200},
+        "Basilisk": {"hp": 37, "atk": 30, "def": 13, "exp": 200}
     },
     "final_boss": {
-        "Dragon": {"hp": 50, "atk": 25, "def": 25},
-        "Fenrir": {"hp": 45, "atk": 35, "def": 20}
+        "Dragon": {"hp": 50, "atk": 25, "def": 25, "exp": 500},
+        "Fenrir": {"hp": 45, "atk": 35, "def": 20, "exp": 500}
     }
 }

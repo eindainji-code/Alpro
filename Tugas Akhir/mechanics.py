@@ -5,6 +5,8 @@ import time
 import screen as s
 import inventory as inv
 
+MAX_FLOOR = 67
+
 with open('data/classes.json', 'r') as f: 
     classes = json.load(f) # mengambil data dalam classes.json
 
@@ -21,7 +23,59 @@ rarity_chances = {
     "Legendary" : 5
 } # digunakan untuk peluang mendapatkan sebuah item berdasarkan rarity
 
+weapon_types = {
+
+    "Mage": "Staff",
+    "Barbarian": "Sword",
+    "Knight": "Shield",
+    "Archer": "Bow"
+} # tipe senjata
+
+equipment_stats = {
+
+    # STAFFS
+    "Nearly Broken Staff": {"atk": 4},
+    "Oak Staff": {"atk": 8},
+    "Buloke Staff": {"atk": 10},
+    "Adams Staff": {"atk": 20},
+
+    # SWORDS
+    "Flimsy Sword": {"atk": 4},
+    "Bronze Sword": {"atk": 8},
+    "Steel Sword": {"atk": 10},
+    "Diamond Sword": {"atk": 20},
+
+    # SHIELDS
+    "Worn-out Shield": {"def": 4},
+    "Copper Shield": {"def": 8},
+    "Roman Scutum (Shield)": {"def": 10},
+    "Captain's Shield": {"def": 20},
+
+    # BOWS
+    "Straight-limb Longbow": {"atk": 4},
+    "Un-power Bow": {"atk": 8},
+    "Power Bow": {"atk": 10},
+    "Artemis's Bow": {"atk": 20}
+}
+
+scavenge_exp = {
+
+    "common": 10,
+    "uncommon": 20,
+    "rare": 40,
+    "Legendary": 80
+}
 def loot_drops(inventory): # fungsi untuk barang yang jatuh dari enemy
+
+    drop_chance = 0.45
+
+    if random.random() > drop_chance:
+
+        print("\nNo drops!")
+        time.sleep(1)
+
+        return
+    
     chosen_rarity = random.choices( # menggunakan random untuk membuat variabel chosen_rarity yaitu memilih satu rarity menggunakan weight
         list(rarity_chances.keys()), # mengambil semua keys dalam rarity_chances "common", "uncommon", dst dan membuat menjadi list
         weights=rarity_chances.values() # mengambil value dari rarity_chances dan membuatnya menjadi persen beban
@@ -123,15 +177,34 @@ def load_player():
 
     for i, player in enumerate(players, start=1):
 
+        # completed dungeon
+        if player["floor"] >= MAX_FLOOR:
+
+            status = "CLEARED"
+        else:
+            status = f"Floor: {player['floor']}"
+
         print(
             f"{i}. "
             f"{player['name']} | "
             f"{player['class']} | "
-            f"Floor: {player['floor']}"
+            f"{status}"
         )
 
     # choose player
-    choice = int(input("\nChoose Save: "))
+    while True:
+        try:
+            choice = int(input("\nChoose Save: "))
+
+            # range validation
+            if choice < 1 or choice > len(players):
+                print("\nInvalid save!")
+                continue
+
+            break
+
+        except ValueError:
+            print("\nPlease enter a valid number!")
 
     # validate
     if choice < 1 or choice > len(players):
@@ -143,13 +216,142 @@ def load_player():
     # selected player
     player = players[choice - 1]
 
+    # completed save check
+    if player["floor"] >= MAX_FLOOR:
+
+        print("\nThis save already cleared the dungeon!")
+        time.sleep(2)
+        s.clear_terminal()
+        return None
+    
     # dead player check
     if player["hp"] <= 0:
 
         print("\nCharacter is dead!")
-
+        time.sleep(2)
+        s.clear_terminal()
         return None
 
     print(f"\nLoaded {player['name']}!")
+    s.clear_terminal()
 
     return player
+
+def check_level_up(player):
+
+    # exp needed formula
+    exp_needed = player["character_level"] * 50
+
+    while player["exp"] >= exp_needed:
+
+        player["exp"] -= exp_needed
+
+        player["character_level"] += 1
+
+        print("\n=== LEVEL UP! ===")
+
+        print(
+            f"{player['name']} "
+            f"reached level "
+            f"{player['character_level']}!"
+        )
+
+        # stat increases
+        player["max_hp"] += 10
+        player["atk"] += 2
+        player["def"] += 1
+
+        # fully heal on level up
+        player["hp"] = player["max_hp"]
+
+        print("\nStats Increased!")
+        print(f"HP  : {player['max_hp']}")
+        print(f"ATK : {player['atk']}")
+        print(f"DEF : {player['def']}")
+
+        # next level requirement
+        exp_needed = player["character_level"] * 50
+
+def equip_item(player, inventory, item_name):
+
+    # item must exist
+    found_item = inventory.search_item(item_name)
+
+    if not found_item:
+
+        return
+
+    player_class = player["class"]
+
+    allowed_weapon = weapon_types[player_class]
+
+    # class compatibility
+    if allowed_weapon.lower() not in item_name.lower():
+
+        print("\nYour class cannot equip this!")
+        return
+
+    # remove old stats
+    old_item = player["equipped_item"]
+
+    if old_item:
+
+        old_stats = equipment_stats[old_item]
+
+        if "atk" in old_stats:
+
+            player["atk"] -= old_stats["atk"]
+
+        if "def" in old_stats:
+
+            player["def"] -= old_stats["def"]
+
+    # equip new item
+    player["equipped_item"] = item_name
+
+    stats = equipment_stats[item_name]
+
+    # apply stats
+    if "atk" in stats:
+
+        player["atk"] += stats["atk"]
+
+    if "def" in stats:
+
+        player["def"] += stats["def"]
+
+    print(f"\nEquipped {item_name}!")
+
+def get_item_rarity(item_name):
+
+    for rarity, items in loot.items():
+
+        if item_name in items:
+
+            return rarity
+
+    return None
+
+def scavenge_item(player, inventory, item_name):
+
+    # item exists?
+    found_item = inventory.search_item(item_name)
+
+    if not found_item:
+        return
+
+    rarity = get_item_rarity(item_name)
+
+    if rarity is None:
+
+        print("\nItem rarity not found!")
+        return
+
+    gained_exp = scavenge_exp[rarity]
+
+    player["exp"] += gained_exp
+    check_level_up(player)
+    inventory.remove_item(item_name)
+
+    print(f"\nScavenged {item_name}!")
+    print(f"Gained {gained_exp} EXP!")

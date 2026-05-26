@@ -1,22 +1,2 @@
 [
-    {
-        "name": "Danish",
-        "class": "Test",
-        "hp": 100,
-        "max_hp": 100,
-        "atk": 100,
-        "def": 100,
-        "skill": "Stupid strong",
-        "character_level": 1,
-        "exp": 0,
-        "floor": 7,
-        "inventory": [
-            "Worn-out Shield",
-            "Worn-out Shield",
-            "Flimsy Sword",
-            "Copper Shield",
-            "Bandage",
-            "Bronze Sword"
-        ]
-    }
 ]

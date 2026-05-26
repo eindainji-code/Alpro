@@ -6,14 +6,26 @@ import battle as b
 import floors as fl
 import inventory as inv
 
-history = b.ActionHistory()
+while True:
 
-player = s.main_menu()
+    history = b.ActionHistory()
 
-root = fl.FloorNode(player["floor"], "tier_1")
+    player = s.main_menu()
 
-inventory = inv.Inventory()
-for item in player["inventory"]:
-    inventory.add_item(item,False)
+    # if menu returns nothing
+    if player is None:
+        break
 
-fl.floor_system(player,root,history,inventory)
+    s.clear_terminal()
+
+    inventory = inv.Inventory()
+
+    for item in player["inventory"]:
+        inventory.add_item(item, False)
+
+    root = fl.FloorNode(
+        player["floor"],
+        fl.get_tier(player["floor"])
+    )
+
+    fl.floor_system(player, root, history, inventory)

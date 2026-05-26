@@ -3,6 +3,26 @@ import mechanics as m
 import json
 import random
 import inventory as inv
+import screen as s
+#Hash table untuk data healing
+item_data = {
+
+    "Potion": {
+        "heal": 20
+    },
+
+    "Bandage": {
+        "heal": 10
+    },
+
+    "Syringe": {
+        "heal": 35
+    },
+
+    "Witches Brew": {
+        "heal": 50
+    }
+}
 
 with open("data/enemies.json", "r") as f:
     enemies = json.load(f) # mengambil data dalam enemies.json
@@ -53,7 +73,6 @@ class ActionHistory:
 
             current = current.next
 
-
     # battle system
     def battle(self, player, enemy, inventory): # fungsi melawan
 
@@ -63,6 +82,7 @@ class ActionHistory:
 
         enemy_defending = False #boolean jika musuh defending
         enemy_dodging = False # atau dodging
+        player_defending = False
 
         while player["hp"] > 0 and enemy["hp"] > 0: # sambil player dan musuh hidup
 
@@ -72,9 +92,10 @@ class ActionHistory:
             print("1. Attack") # ada 3 pilihan
             print("2. Defend")
             print("3. Inventory")
+            print("4. Exit")
 
             choice = input("Choose Action: ")
-
+            s.clear_terminal()
             # convert menu ke action
             if choice == "1":
 
@@ -87,6 +108,10 @@ class ActionHistory:
             elif choice == "3":
 
                 action = "inventory"
+
+            elif choice == "4":
+
+                action = "exit"
 
             else:
 
@@ -105,7 +130,7 @@ class ActionHistory:
             if current.action == "attack":
 
                 enemy_def = enemy["def"]
-
+    
                 if enemy_defending: # jika enemy lagi defending 
 
                     enemy_def = int(enemy_def * 1.5) # defense musuh kali 1.5
@@ -115,6 +140,12 @@ class ActionHistory:
                 if damage < 1:
                     damage = 1
 
+                if enemy_dodging:
+                    damage = 0
+                    print(f"{enemy['name']} dodged the attack!")
+
+                    enemy_dodging = False
+
                 enemy["hp"] -= damage
 
                 if enemy["hp"] < 0:
@@ -122,28 +153,50 @@ class ActionHistory:
 
                 print(f"{player['name']} attacks!")
                 print(f"{enemy['name']} takes {damage} damage!")
-
+                print(f"\n{enemy['name']} HP: {enemy['hp']}")
+                print(f"{player['name']} HP: {player['hp']}")
+                time.sleep(0.5)
                 enemy_defending = False
 
             # DEFEND
             elif current.action == "defend":
 
+                player_defending = True
+
                 print(f"{player['name']} is defending!")
 
             # HEAL
             elif current.action == "inventory":
-
+                
                 while True:
+                    
+                    equipped = player["equipped_item"]
+
+                    if equipped is None:
+                        equipped = "None"
+
+                    print(f"\nEquipped: {equipped}")
+                    print(f"Class: {player['class']}")
+                    exp_needed = player["character_level"] * 50
+                    remaining_exp = max(0,exp_needed - player["exp"])
+
+                    print(
+                        f"LEVEL: {player['character_level']} | "
+                        f"EXP: {player['exp']}/{exp_needed}"
+                    )
+
+                    print(f"EXP Needed: {remaining_exp}")
 
                     print("\n=== INVENTORY MENU ===")
                     print("1. Show Inventory")
                     print("2. Search Item")
                     print("3. Use Item")
-                    print("4. Remove Item")
-                    print("5. Exit Inventory")
+                    print("4. Scavenge Item")
+                    print("5. Equip Item")
+                    print("6. Exit Inventory")
 
                     inv_choice = input("Choose: ")
-
+                    s.clear_terminal()
                     # SHOW INVENTORY
                     if inv_choice == "1":
 
@@ -158,98 +211,76 @@ class ActionHistory:
 
                     # USE ITEM
                     elif inv_choice == "3":
+                        
+                        if inventory.head is None:
+
+                            print("\nInventory is empty!")
+                            time.sleep(0.5)
+                            continue
 
                         inventory.show_inventory()
 
                         item_choice = input("\nUse Item: ").title()
 
-                        # POTION
-                        if item_choice == "Potion":
+                        # check if item exists in hash table
+                        if item_choice in item_data:
 
-                            if inventory.search_item("Potion"):
+                            # check if player has item
+                            found_item = inventory.search_item(item_choice)
 
-                                heal_amount = 15
+                            if found_item:
+
+                                heal_amount = item_data[item_choice]["heal"]
 
                                 player["hp"] += heal_amount
 
+                                # max hp limit
                                 if player["hp"] > player["max_hp"]:
 
                                     player["hp"] = player["max_hp"]
 
-                                inventory.remove_item("Potion")
+                                inventory.remove_item(item_choice)
 
-                                print(f"\n{player['name']} used Potion!")
-                                print(f"Healed {heal_amount} HP!")
-
-                        # BANDAGE
-                        elif item_choice == "Bandage":
-
-                            if inventory.search_item("Bandage"):
-
-                                heal_amount = 5
-
-                                player["hp"] += heal_amount
-
-                                if player["hp"] > player["max_hp"]:
-
-                                    player["hp"] = player["max_hp"]
-
-                                inventory.remove_item("Bandage")
-
-                                print(f"\n{player['name']} used Bandage!")
-                                print(f"Healed {heal_amount} HP!")
-
-                        # SYRINGE
-                        elif item_choice == "Syringe":
-
-                            if inventory.search_item("Syringe"):
-
-                                heal_amount = 25
-
-                                player["hp"] += heal_amount
-
-                                if player["hp"] > player["max_hp"]:
-
-                                    player["hp"] = player["max_hp"]
-
-                                inventory.remove_item("Syringe")
-
-                                print(f"\n{player['name']} used Syringe!")
-                                print(f"Healed {heal_amount} HP!")
-
-                        # WITCHES BREW
-                        elif item_choice == "Witches Brew":
-
-                            if inventory.search_item("Witches Brew"):
-
-                                heal_amount = 40
-
-                                player["hp"] += heal_amount
-
-                                if player["hp"] > player["max_hp"]:
-
-                                    player["hp"] = player["max_hp"]
-
-                                inventory.remove_item("Witches Brew")
-
-                                print(f"\n{player['name']} used Witches Brew!")
+                                print(f"\n{player['name']} used {item_choice}!")
                                 print(f"Healed {heal_amount} HP!")
 
                         else:
 
                             print("\nItem cannot be used!")
 
-                    # REMOVE ITEM
+                    # SCAVENGE ITEM
                     elif inv_choice == "4":
+
+                        if inventory.head is None:
+
+                            print("\nInventory is empty!")
+                            time.sleep(1)
+                            continue
 
                         inventory.show_inventory()
 
-                        target = input("\nRemove Item: ").title()
+                        item_name = input("\nScavenge Item: ").title()
 
-                        inventory.remove_item(target)
+                        m.scavenge_item(player, inventory, item_name)
+
+                        time.sleep(1)
+
+                    elif inv_choice == "5":
+
+                        if inventory.head is None:
+
+                            print("\nInventory is empty!")
+                            time.sleep(0.5)
+                            continue
+
+                        inventory.show_inventory()
+
+                        item_name = input("\nEquip Item: ").title()
+
+                        m.equip_item(player, inventory, item_name)
 
                     # EXIT
-                    elif inv_choice == "5":
+                    elif inv_choice == "6":
 
                         break
 
@@ -259,6 +290,9 @@ class ActionHistory:
 
                 continue
 
+            elif current.action == "exit":
+                return "lose"
+
             time.sleep(1)
 
             # CHECK IF ENEMY DEAD
@@ -266,13 +300,24 @@ class ActionHistory:
 
                 print(f"\n{enemy['name']} was defeated!")
 
-                m.loot_drops(inventory) # memanggil fungsi loot dari mechanics
+                # gain exp
+                exp_gain = enemy.get("exp", 0)
+
+                player["exp"] += exp_gain
+
+                print(f"\nGained {exp_gain} EXP!")
+
+                # check level up
+                m.check_level_up(player)
+
+                # loot
+                m.loot_drops(inventory)
 
                 player["inventory"] = inventory.to_list() # save ke inventory
 
                 m.save_player(player) # player di save
 
-                return True # kembalikan true
+                return "win" # kembalikan true
 
             # ENEMY TURN
             print(f"\n{enemy['name']}'s Turn")
@@ -285,7 +330,13 @@ class ActionHistory:
 
             if action == "attack":
 
-                damage = enemy["atk"] - player["def"]
+                player_def = player["def"]
+
+                if player_defending:
+
+                    player_def = int(player_def * 1.5)
+
+                damage = enemy["atk"] - player_def
 
                 if damage < 1:
                     damage = 1
@@ -296,7 +347,7 @@ class ActionHistory:
                     player["hp"] = 0
 
                 print(f"{player['name']} takes {damage} damage!")
-
+                player_defending = False
             elif action == "defend":
 
                 enemy_defending = True
@@ -321,7 +372,8 @@ class ActionHistory:
                 print(f"{enemy['name']} used their skill!")
                 print(f"{player['name']} takes {skill_damage} damage!")
 
-            print(f"\n{player['name']} HP: {player['hp']}")
+            print(f"\n{enemy['name']} HP: {enemy['hp']}")
+            print(f"{player['name']} HP: {player['hp']}")
 
             time.sleep(1)
 
@@ -332,7 +384,7 @@ class ActionHistory:
 
                 m.save_player(player)
 
-                return False
+                return "lose"
 
 def random_enemy(tier): # fungsi untuk mendapatkan enemy yang random
     # random enemy name
@@ -348,4 +400,3 @@ def random_enemy(tier): # fungsi untuk mendapatkan enemy yang random
     enemy_data["tier"] = tier
 
     return enemy_data
-

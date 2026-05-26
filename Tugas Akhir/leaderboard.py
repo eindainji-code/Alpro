@@ -1,5 +1,6 @@
 import json
 import os
+import screen as s
 
 def load_players(fpath = "data/player.json"): #Memuat semua data pemain dari file JSON
     if not os.path.exists(fpath):

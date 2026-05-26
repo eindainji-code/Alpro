@@ -58,7 +58,7 @@ def Inventory(player):
 
 def main_menu():
 
-    print("\n=== Welcome to PLACEHOLDER ===\n")
+    print("\n=== Welcome to Hero's Journey ===\n")
     
     while True:
         print("=== MAIN MENU ===")
@@ -67,7 +67,16 @@ def main_menu():
         print("3. Leaderboard")
         print("4. Exit")
 
-        choice = int(input("Please choose: "))
+        choice = input("Please choose: ")
+
+        clear_terminal()
+
+        if not choice.isdigit():
+
+            print("\nPlease enter a number!")
+            continue
+
+        choice = int(choice)
 
         if choice == 1:
             player = Choosing()
@@ -75,22 +84,23 @@ def main_menu():
             print(f"\nWelcome {player["name"]}")
             return player
 
-        if choice == 2:
+        elif choice == 2:
             player = m.load_player()
 
             if player:
                 print(f"\nLoaded {player["name"]}")
                 return player
             
-        if choice == 3:
+        elif choice == 3:
             import leaderboard as lb
             players = lb.load_players()
             lb.display_lb(players)
             input("\nPress ENTER to go back.")
+            clear_terminal()
 
-        if choice == 4:
+        elif choice == 4:
             print("\nGoodbye")
-            exit()
+            return None
 
         else:
             print("\nInvalid\n")
@@ -109,9 +119,10 @@ def Character_Creator(name, chosen_class): # fungsi untuk membuat karakter
         "character_level" : 1,
         "exp": 0,
         "floor": 1,
-        "inventory": []
+        "inventory": [],
+        "equipped_item": None
     } 
- 
+    
     return player #mengambilkan sebuah dict player
 
 def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
@@ -122,28 +133,42 @@ def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
 
     print("=== ALL CHARACTERS ===\n")
 
-    for name_class in classes: #looping semua class
+    for i, name_class in enumerate(classes): #looping semua class
 
         data = classes[name_class]
 
-        print(f"{name_class}") # mengeprint stat semua class
+        print(f"{i+1}. {name_class}") # mengeprint stat semua class
         print(f"HP      : {data['hp']}")
         print(f"ATK     : {data['atk']}")
         print(f"DEF     : {data['def']}")
         print(f"SKILL   : {data['skill']}")
         print()
 
-    choice = input("Select character: ").capitalize() # pilig class dengan nama
+    choice = input("Select character: ")
 
-    if choice not in classes: # jika class tidak ada menulis class tidak available
+    # number validation
+    if not choice.isdigit():
+
+        print("\nInvalid input!")
+        return None
+
+    choice = int(choice)
+
+    # range validation
+    if choice < 1 or choice > len(classes):
+
         print("\nClass isn't available!")
-        time.sleep(1)
-        return
+        return None
+
+    # convert number to class name
+    class_names = list(classes.keys())
+
+    selected_class = class_names[choice - 1]
     
-    print(f"\nSuccesfully selected {choice}!")
+    print(f"\nSuccesfully selected {selected_class}!")
     time.sleep(1) # time digunakan supaya pop-up nya bisa dibaca
 
-    player = Character_Creator(nama, choice) # menggunakan player sebagai variabel untuk membuat karakter
+    player = Character_Creator(nama, selected_class) # menggunakan player sebagai variabel untuk membuat karakter
 
     m.save_player(player) # fungsi save 
 
