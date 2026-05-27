@@ -120,10 +120,10 @@ def encyclopedia():
     print("=" * 40)
  
     while True:
-        query = input("\nFind enemy").strip()
+        query = input("\nFind enemy: ").strip()
  
         if query.lower() == "exit":
-            print("\nEnter the enemy's name.")
+            print("\nClosing Encyclopedia")
             break
  
         if query.lower() == "list":

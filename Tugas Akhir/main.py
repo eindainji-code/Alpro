@@ -12,9 +12,12 @@ while True:
 
     player = s.main_menu()
 
+    if player == "exit":
+        break
+
     # if menu returns nothing
     if player is None:
-        break
+        continue
 
     s.clear_terminal()
 

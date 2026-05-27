@@ -171,6 +171,14 @@ def load_player():
     with open("data/player.json", "r") as f:
 
         players = json.load(f)
+    
+    if len(players) == 0:
+
+        print("\nNo saved players!")
+        time.sleep(2)
+        s.clear_terminal()
+
+        return None
 
     # show all players
     print("\n=== SAVED PLAYERS ===\n")

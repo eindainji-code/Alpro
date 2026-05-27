@@ -81,7 +81,10 @@ def main_menu():
         if choice == 1:
             player = Choosing()
 
-            print(f"\nWelcome {player["name"]}")
+            if player is None:
+                return None
+
+            print(f"\nWelcome {player['name']}")
             return player
 
         elif choice == 2:
@@ -100,7 +103,7 @@ def main_menu():
 
         elif choice == 4:
             print("\nGoodbye")
-            return None
+            return "exit"
 
         else:
             print("\nInvalid\n")
@@ -130,6 +133,13 @@ def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
     clear_terminal()
 
     nama = input("Masukkan nama: ")
+
+    if not nama.strip():
+
+        print("\nName cannot be empty!")
+        time.sleep(1)
+
+        return None
 
     print("=== ALL CHARACTERS ===\n")
 

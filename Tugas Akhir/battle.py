@@ -4,6 +4,8 @@ import json
 import random
 import inventory as inv
 import screen as s
+import encyclopedia as enc
+
 #Hash table untuk data healing
 item_data = {
 
@@ -92,7 +94,8 @@ class ActionHistory:
             print("1. Attack") # ada 3 pilihan
             print("2. Defend")
             print("3. Inventory")
-            print("4. Exit")
+            print("4. Enemy Info")
+            print("5. Exit")
 
             choice = input("Choose Action: ")
             s.clear_terminal()
@@ -111,8 +114,11 @@ class ActionHistory:
 
             elif choice == "4":
 
-                action = "exit"
+                action = "enemy_info"
 
+            elif choice == "5":
+                action = "exit"
+                
             else:
 
                 print("\nInvalid!")
@@ -292,6 +298,12 @@ class ActionHistory:
 
             elif current.action == "exit":
                 return "lose"
+
+            elif current.action == "enemy_info":
+
+                enc.encyclopedia()
+
+                continue
 
             time.sleep(1)
 
