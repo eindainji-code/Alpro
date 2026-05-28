@@ -114,6 +114,7 @@ class ActionHistory: # doubly linked list
                     
                 else:
                     print("\nInvalid!")
+                    rotation.set_player_turn()
                     continue # continue supaya jika pilih salah, bisa pilih lagi
 
                 # simpan action ke doubly linked list

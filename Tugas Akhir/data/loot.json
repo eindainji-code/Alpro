@@ -1,31 +1,31 @@
 {
     "common": [
-        "Nearly Broken Staff", 
-        "Worn-out Shield", 
-        "Flimsy Sword", 
-        "Straight Limb Longbow", 
-        "Bandage"
+        "nearly broken staff", 
+        "worn out shield", 
+        "flimsy sword", 
+        "straight limb longbow", 
+        "bandage"
     ],
     "uncommon": [
-        "Oak Staff",
-        "Bronze Sword",
-        "Copper Shield",
-        "Unpower Bow",
-        "Syringe"
+        "oak staff",
+        "bronze sword",
+        "copper shield",
+        "unpower bow",
+        "syringe"
     ],
     "rare" : [
-        "Buloke Staff",
-        "Steel Sword",
-        "Roman Scutum Shield",
-        "Power Bow",
-        "Potion"
+        "buloke staff",
+        "steel sword",
+        "roman scutum shield",
+        "power bow",
+        "potion"
     ],
 
-    "Legendary" : [
-        "Adams Staff",
-        "Diamond Sword",
-        "Captain's Shield",
-        "Artemis's Bow",
-        "Witches Brew"
+    "legendary" : [
+        "adams staff",
+        "diamond sword",
+        "captain's shield",
+        "artemis's bow",
+        "witches brew"
     ] 
 }
