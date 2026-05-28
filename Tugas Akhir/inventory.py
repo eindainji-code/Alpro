@@ -26,34 +26,27 @@ class Inventory:
             print(f"{item} collected!")
             time.sleep(0.5)
 
-    def show_inventory(self):
+    def show_inventory(self): # menunjukka item dalam inventory
         if self.head is None:
-
             print("\nInventory is empty!")
             time.sleep(0.2)
             return
         
         print("\nINVENTORY")
         current = self.head
-
         number = 1
 
         while current:
             print(f"{number}. {current.item}")
-
             current = current.next 
-
             number += 1
 
-    def search_item(self,target):
+    def search_item(self,target): # fungsi mencari item
         current = self.head
-
         while current:
             if current.item.lower() == target.lower():
-
                 print(f"\n{target} found!")
                 return current.item
-            
             current = current.next
 
         print(f"\n{target} not found!")
@@ -64,43 +57,31 @@ class Inventory:
 
         # inventory kosong
         if self.head is None:
-
             print("\nInventory empty!")
             return
 
         if self.head.item.lower() == target.lower():
-
             self.head = self.head.next
-
             print(f"\n{target} removed!")
             return
 
         # cari item
         current = self.head
-
         while current.next:
-
             if current.next.item.lower() == target.lower():
-
                 current.next = current.next.next
-
                 print(f"\n{target} removed!")
                 return
 
             current = current.next
-
         print(f"\n{target} not found!")
 
     def to_list(self):
-
         items = []
-
         current = self.head
 
         while current:
-
             items.append(current.item)
-
             current = current.next
 
         return items

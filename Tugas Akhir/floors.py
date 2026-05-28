@@ -5,62 +5,49 @@ import battle as b
 import mechanics as m
 import screen as s
 
-max_floor = 67
+max_floor = 67 # max floor
 
 with open("data/enemies.json", "r") as f:
-
     enemies = json.load(f)
 
 #fungsi untuk lantai-lantai dan memilihnya menggunakan tree
 class FloorNode: # node lantai
-    def __init__(self, floor_num, tier, floor_type="normal"): # masuknya nomor lantai dan tier lantai
-
+    def __init__(self, floor_num, tier, floor_type="normal"): 
         self.floor_num = floor_num
         self.tier = tier
         self.floor_type = floor_type
-
         self.left = None
         self.right = None
 
-# fungsi membuat tree secara rekursif
+# fungsi membuat tree 
 def generate_children(node):
-
-    if node.floor_num >= max_floor:
+    if node.floor_num >= max_floor: # check if floor number exceeds max floor
         return  
 
-    next_floor = node.floor_num + 1
+    next_floor = node.floor_num + 1 
 
-    # tier scaling
-    tier = get_tier(next_floor)
+    # get current tier
+    tier = get_tier(next_floor) 
 
-    # create ONLY 2 next floors
+    # types of floors
     types = ["normal", "hard", "rest"]
 
+    #options will always be different from eachother
     left_type = random.choice(types)
-
     types.remove(left_type)
-
     right_type = random.choice(types)
 
-    node.left = FloorNode(
-        next_floor,
-        tier,
-        left_type
-    )
+    node.left = FloorNode(next_floor,tier,left_type)
 
-    node.right = FloorNode(
-        next_floor,
-        tier,
-        right_type
-    )
+    node.right = FloorNode(next_floor,tier,right_type)
 
 # FLOOR TRAVERSAL
-def floor_system(player, root,history,inventory):# sistem lantai 
-
+def floor_system(player, root,history,inventory,enemy_queue):
     current_floor = root
     path_taken = []
     
-    while current_floor and player["hp"] > 0:
+    #traversal
+    while current_floor and player.hp > 0:
 
         print("\n" + "=" * 40)
         print(f"FLOOR {current_floor.floor_num}")
@@ -70,47 +57,47 @@ def floor_system(player, root,history,inventory):# sistem lantai
         # REST ROOM
         if current_floor.floor_type == "rest":
             print("\n=== REST AREA ===")
-
-            heal = player["max_hp"] // 2
-
-            player["hp"] += heal
-
-            if player["hp"] > player["max_hp"]:
-                player["hp"] = player["max_hp"]
+            heal = player.max_hp // 2
+            player.hp += heal
+            if player.hp > player.max_hp:
+                player.hp = player.max_hp
 
             print(f"Healed {heal} HP!")
-
             time.sleep(2)
-
             result = "win"
 
-        # HARD ROOM
+        # HARD ROOM (banyak musuh)
         elif current_floor.floor_type == "hard":
-
             print("\n=== HARD ENCOUNTER ===")
 
-            enemy = b.random_enemy(current_floor.tier)
+            # enqueue multiple enemies
+            for _ in range(3):
+                enemy = b.random_enemy(current_floor.tier)
+                enemy["hp"] += 10
+                enemy["atk"] += 5
+                enemy_queue.enqueue(enemy)
 
-            enemy["hp"] += 10
-            enemy["atk"] += 5
+            # fight until queue empty
+            while not enemy_queue.is_empty():
+                enemy = enemy_queue.dequeue()
+                result = history.battle(player,enemy,inventory)
 
-            result = history.battle(player, enemy, inventory)
+                # player lost/exited
+                if result != "win":
+                    break
 
-        # NORMAL ROOM
+                print(f"{enemy['name']} defeated!")
+
+        # NORMAL ROOM (hanya satu)
         else:
-
-            enemy = b.random_enemy(current_floor.tier)
-
-            result = history.battle(player, enemy, inventory)
+            enemy_queue.enqueue(b.random_enemy(current_floor.tier))
+            enemy = enemy_queue.dequeue()
+            result = history.battle(player,enemy,inventory)
 
         # PLAYER SURVIVED
         if result == "win":
-
-            if current_floor.floor_type != "rest":
-                print(f"{enemy['name']} defeated!")
-
-            if player["floor"] < max_floor:
-                player["floor"] += 1
+            if player.floor < max_floor:
+                player.floor += 1
 
             m.save_player(player)
 
@@ -123,18 +110,13 @@ def floor_system(player, root,history,inventory):# sistem lantai
 
         # final floor
         if current_floor.left is None and current_floor.right is None:
-
             generate_children(current_floor)
-
             if current_floor.left is None and current_floor.right is None:
-
                 print("\n=== DUNGEON CLEARED ===")
-
                 break
 
         # choose path
         while True:
-
             print("\nChoose Path:")
             print(
                 f"1. Left Path "
@@ -146,11 +128,8 @@ def floor_system(player, root,history,inventory):# sistem lantai
                 f"[{current_floor.right.floor_type.title()}]")
 
             print("3. Exit dungeon")
-
             choice = input("Choose: ")
-
             if choice in ["1", "2", "3"]:
-
                 break
 
             print("\nInvalid!")
@@ -159,28 +138,22 @@ def floor_system(player, root,history,inventory):# sistem lantai
         s.clear_terminal()
 
         if choice == "1":
-
             path_taken.append(
                 f"Floor {current_floor.floor_num} -> Left"
             )
-
             current_floor = current_floor.left
 
         elif choice == "2":
-
             path_taken.append(
                 f"Floor {current_floor.floor_num} -> Right"
             )
-
             current_floor = current_floor.right
 
         elif choice == "3":
-
             print("\nLeft the dungeon!")
             break
 
     print("\n=== PATH TAKEN ===")
-
     if len(path_taken) == 0:
         print("No movements.")
 

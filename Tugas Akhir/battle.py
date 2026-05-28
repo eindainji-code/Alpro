@@ -2,28 +2,16 @@ import time
 import mechanics as m
 import json
 import random
-import inventory as inv
 import screen as s
 import encyclopedia as enc
+import turn_rotation as tr
 
 #Hash table untuk data healing
 item_data = {
-
-    "Potion": {
-        "heal": 20
-    },
-
-    "Bandage": {
-        "heal": 10
-    },
-
-    "Syringe": {
-        "heal": 35
-    },
-
-    "Witches Brew": {
-        "heal": 50
-    }
+    "Potion": {"heal": 20},
+    "Bandage": {"heal": 10},
+    "Syringe": {"heal": 35},
+    "Witches Brew": {"heal": 50}
 }
 
 with open("data/enemies.json", "r") as f:
@@ -32,14 +20,12 @@ with open("data/enemies.json", "r") as f:
 #membuat fungsi melawan dan historynya menggunakan doubly linked list
 class ActionNode: # membuat class node 
     def __init__(self, action):
-
         self.action = action
         self.next = None
         self.prev = None
 
-class ActionHistory: 
+class ActionHistory: # doubly linked list
     def __init__(self):
-
         self.head = None
         self.tail = None
 
@@ -50,29 +36,21 @@ class ActionHistory:
 
         # node pertama kalau belum ada
         if self.head is None: 
-
             self.head = new_node
             self.tail = new_node
 
-        # tambah ke belakang
+        # tambah ke belakang kalau sudah ada
         else:
-
             self.tail.next = new_node
             new_node.prev = self.tail
             self.tail = new_node
 
-
     # menampilkan history action
     def show_history(self): # untuk melihat history aksi
-
         current = self.head
-
         print("\n=== ACTION HISTORY ===")
-
         while current:
-
             print(current.action)
-
             current = current.next
 
     # battle system
@@ -82,321 +60,351 @@ class ActionHistory:
         time.sleep(0.25)
         print(f"{enemy["name"]} appeared!")
 
+        # circular linked list
+        rotation = tr.TurnRotation() # dengan CLL mulai rotasi
+
+        rotation.add_turn("player") # player gerak duluan
+        rotation.add_turn("enemy") # lalu musuh
+
+        rotation.start()
+
         enemy_defending = False #boolean jika musuh defending
         enemy_dodging = False # atau dodging
-        player_defending = False
+        player_defending = False # boolean untuk player defend
 
-        while player["hp"] > 0 and enemy["hp"] > 0: # sambil player dan musuh hidup
+        while player.hp > 0 and enemy["hp"] > 0: # sambil player dan musuh hidup
+            turn = rotation.next_turn() # rotasi akan berganti dari player dan musuh    
 
             # PLAYER TURN
-            print(f"\n{player['name']}'s Turn")
+            if turn == "player":
+                print(f"\n{player.name}'s Turn!")
+                print("-" * 40)
 
-            print("1. Attack") # ada 3 pilihan
-            print("2. Defend")
-            print("3. Inventory")
-            print("4. Enemy Info")
-            print("5. Exit")
+                print("1. Attack") # ada 7 pilihan
+                print("2. Defend")
+                print("3. Skill")
+                print("4. Inventory")
+                print("5. Enemy Info")
+                print("6. Stats")
+                print("7. Exit")
 
-            choice = input("Choose Action: ")
-            s.clear_terminal()
-            # convert menu ke action
-            if choice == "1":
+                choice = input("Choose Action: ") # pilih aksi
+                s.clear_terminal()
+                # convert menu ke action
+                if choice == "1":
+                    action = "attack"
 
-                action = "attack"
+                elif choice == "2":
+                    action = "defend"
 
-            elif choice == "2":
+                elif choice == "3":
+                    action = "skill"
 
-                action = "defend"
+                elif choice == "4":
+                    action = "inventory"
 
-            elif choice == "3":
+                elif choice == "5":
+                    action = "enemy_info"
 
-                action = "inventory"
+                elif choice == "6":
+                    action = "stats"
 
-            elif choice == "4":
-
-                action = "enemy_info"
-
-            elif choice == "5":
-                action = "exit"
-                
-            else:
-
-                print("\nInvalid!")
-                continue
-
-            # simpan action ke doubly linked list
-            self.add_action(action)
-
-            # execute latest action
-            current = self.tail
-
-            print(f"\nAction Used: {current.action}")
-
-            # ATTACK
-            if current.action == "attack":
-
-                enemy_def = enemy["def"]
-    
-                if enemy_defending: # jika enemy lagi defending 
-
-                    enemy_def = int(enemy_def * 1.5) # defense musuh kali 1.5
-
-                damage = player["atk"] - enemy_def
-
-                if damage < 1:
-                    damage = 1
-
-                if enemy_dodging:
-                    damage = 0
-                    print(f"{enemy['name']} dodged the attack!")
-
-                    enemy_dodging = False
-
-                enemy["hp"] -= damage
-
-                if enemy["hp"] < 0:
-                    enemy["hp"] = 0
-
-                print(f"{player['name']} attacks!")
-                print(f"{enemy['name']} takes {damage} damage!")
-                print(f"\n{enemy['name']} HP: {enemy['hp']}")
-                print(f"{player['name']} HP: {player['hp']}")
-                time.sleep(0.5)
-                enemy_defending = False
-
-            # DEFEND
-            elif current.action == "defend":
-
-                player_defending = True
-
-                print(f"{player['name']} is defending!")
-
-            # HEAL
-            elif current.action == "inventory":
-                
-                while True:
+                elif choice == "7":
+                    action = "exit"
                     
-                    equipped = player["equipped_item"]
+                else:
+                    print("\nInvalid!")
+                    continue # continue supaya jika pilih salah, bisa pilih lagi
 
-                    if equipped is None:
-                        equipped = "None"
+                # simpan action ke doubly linked list
+                self.add_action(action)
 
-                    print(f"\nEquipped: {equipped}")
-                    print(f"Class: {player['class']}")
-                    exp_needed = player["character_level"] * 50
-                    remaining_exp = max(0,exp_needed - player["exp"])
+                # execute latest action
+                current = self.tail
 
-                    print(
-                        f"LEVEL: {player['character_level']} | "
-                        f"EXP: {player['exp']}/{exp_needed}"
-                    )
+                print(f"\nAction Used: {current.action}")
 
-                    print(f"EXP Needed: {remaining_exp}")
+                # attack
+                if current.action == "attack":
+                    enemy_def = enemy["def"] # enemy's defense is enemy_def
+        
+                    if enemy_defending: # jika enemy lagi defending 
+                        enemy_def = int(enemy_def * 1.5) # defense musuh kali 1.5
 
-                    print("\n=== INVENTORY MENU ===")
-                    print("1. Show Inventory")
-                    print("2. Search Item")
-                    print("3. Use Item")
-                    print("4. Scavenge Item")
-                    print("5. Equip Item")
-                    print("6. Exit Inventory")
+                    damage = player.atk - enemy_def # calculate damage
 
-                    inv_choice = input("Choose: ")
-                    s.clear_terminal()
-                    # SHOW INVENTORY
-                    if inv_choice == "1":
+                    if damage < 1:
+                        damage = 1
 
-                        inventory.show_inventory()
+                    if enemy_dodging: # if enemy dodging
+                        damage = 0 # does 0 damage
+                        print(f"{enemy['name']} dodged the attack!")
 
-                    # SEARCH ITEM
-                    elif inv_choice == "2":
+                        enemy_dodging = False # after dodged enemy dodging becomes false
 
-                        target = input("\nSearch Item: ").title()
+                    enemy["hp"] -= damage # enemy health goes down
 
-                        inventory.search_item(target)
+                    if enemy["hp"] < 0:
+                        enemy["hp"] = 0 #if enemy hp is 0 or lower
 
-                    # USE ITEM
-                    elif inv_choice == "3":
-                        
-                        if inventory.head is None:
+                    print(f"{player.name} attacks!")
+                    print(f"{enemy['name']} takes {damage} damage!")
+                    print(f"\n{enemy['name']} HP: {enemy['hp']}")
+                    print(f"{player.name} HP: {player.hp}")
+                    time.sleep(0.5)
+                    enemy_defending = False # so enemy defending isnt stuck on true
 
-                            print("\nInventory is empty!")
-                            time.sleep(0.5)
-                            continue
+                # defend
+                elif current.action == "defend":
+                    player_defending = True # if player defends
+                    print(f"{player.name} is defending!")
 
-                        inventory.show_inventory()
+                # inventory
+                elif current.action == "inventory":
+                    while True:
+                        equipped = player.equipped_item # check what item is equipped
 
-                        item_choice = input("\nUse Item: ").title()
+                        if equipped is None:
+                            equipped = "None" # if nothing its none
 
-                        # check if item exists in hash table
-                        if item_choice in item_data:
+                        # shows a bit of info
+                        print(f"\nEquipped: {equipped}")
+                        print(f"Class: {player.char_class}")
+                        exp_needed = player.level * 50 
+                        remaining_exp = max(0,exp_needed - player.exp)
 
-                            # check if player has item
-                            found_item = inventory.search_item(item_choice)
+                        print(
+                            f"LEVEL: {player.level} | "
+                            f"EXP: {player.exp}/{exp_needed}"
+                        )
 
-                            if found_item:
+                        print(f"EXP Needed: {remaining_exp}") 
 
-                                heal_amount = item_data[item_choice]["heal"]
+                        #inventory menu
+                        print("\n=== INVENTORY MENU ===") 
+                        print("1. Show Inventory") # 6 options
+                        print("2. Search Item")
+                        print("3. Use Item")
+                        print("4. Scavenge Item")
+                        print("5. Equip Item")
+                        print("6. Exit Inventory")
 
-                                player["hp"] += heal_amount
+                        inv_choice = input("Choose: ") # choose
+                        s.clear_terminal()
+                        # SHOW INVENTORY
+                        if inv_choice == "1":
+                            inventory.show_inventory() # show inventory function
 
-                                # max hp limit
-                                if player["hp"] > player["max_hp"]:
+                        # SEARCH ITEM
+                        elif inv_choice == "2":
+                            target = input("\nSearch Item: ").strip() # strip so xtra space removed
+                            inventory.search_item(target) # search function
 
-                                    player["hp"] = player["max_hp"]
+                        # USE ITEM
+                        elif inv_choice == "3": # use item                           
+                            if inventory.head is None: # if nothing in inventory
+                                print("\nInventory is empty!") # prints this
+                                time.sleep(0.5)
+                                continue 
 
-                                inventory.remove_item(item_choice)
+                            inventory.show_inventory() # show inventory function
+                            item_choice = input("\nUse Item: ").strip()
 
-                                print(f"\n{player['name']} used {item_choice}!")
-                                print(f"Healed {heal_amount} HP!")
+                            # check if item exists in hash table above
+                            if item_choice in item_data:
+
+                                # check if player has item
+                                found_item = inventory.search_item(item_choice)
+
+                                if found_item:
+                                    heal_amount = item_data[item_choice]["heal"] # heals based on the data
+                                    player.hp += heal_amount
+
+                                    # max hp limit
+                                    if player.hp > player.max_hp: # if hp is bigger than max
+                                        player.hp = player.max_hp
+
+                                    inventory.remove_item(item_choice) # remove item
+                                    print(f"\n{player.name} used {item_choice}!")
+                                    print(f"Healed {heal_amount} HP!")
+
+                            else:
+                                print("\nItem cannot be used!")
+
+                        # SCAVENGE ITEM
+                        elif inv_choice == "4":
+                            if inventory.head is None:
+                                print("\nInventory is empty!")
+                                time.sleep(1)
+                                continue
+
+                            inventory.show_inventory()
+                            item_name = input("\nScavenge Item: ").strip() # scavenge input
+                            m.scavenge_item(player, inventory, item_name)# scavenge function
+                            time.sleep(1)
+
+                        #EQUIP ITEM
+                        elif inv_choice == "5":
+                            if inventory.head is None:
+                                print("\nInventory is empty!")
+                                time.sleep(0.5)
+                                continue
+
+                            inventory.show_inventory()
+                            item_name = input("\nEquip Item: ").strip()
+                            m.equip_item(player, inventory, item_name) # equip function
+
+                        # EXIT
+                        elif inv_choice == "6": # exit
+                            break
 
                         else:
+                            print("\nInvalid!")
 
-                            print("\nItem cannot be used!")
+                    rotation.set_player_turn() # if you exit this menu then its still your turn
+                    continue # continue
+                
+                #CHECK STATS
+                elif current.action == "stats":
+                    s.Stats(player) # stats function
 
-                    # SCAVENGE ITEM
-                    elif inv_choice == "4":
+                    s.clear_terminal()
+                    rotation.set_player_turn() # still player turn
+                    continue 
 
-                        if inventory.head is None:
+                elif current.action == "exit":
+                    return "exit" #returns "exit"
+                
+                #SKILL USAGE
+                elif current.action == "skill":
+                    if player.floor < player.skill_cooldown: # check skill cooldown
+                        remaining = (player.skill_cooldown- player.floor) # cooldown remaining
+                        print(f"\nSkill is on cooldown!")
+                        print(f"{remaining} floor(s) remaining.")
+                        rotation.set_player_turn()
+                        continue
 
-                            print("\nInventory is empty!")
-                            time.sleep(1)
-                            continue
+                    print(f"\n{player.name} used " 
+                          f"{player.skill}!")
 
-                        inventory.show_inventory()
+                    if player.char_class == "Mage": # if mage skill
+                        damage = player.atk * 2
+                        enemy["hp"] -= damage
 
-                        item_name = input("\nScavenge Item: ").title()
+                        print(
+                            f"Fireball deals "
+                            f"{damage} damage!"
+                        )
 
-                        m.scavenge_item(player, inventory, item_name)
+                    elif player.char_class == "Barbarian": # if barb skill
+                        player.atk += 5
 
-                        time.sleep(1)
+                        print("\nAttack increased!")
 
-                    elif inv_choice == "5":
+                    elif player.char_class == "Knight": #if knight skill
+                        player_defending = True
+                        player.defense += 5
 
-                        if inventory.head is None:
+                        print("\nDefense increased!")
 
-                            print("\nInventory is empty!")
-                            time.sleep(0.5)
-                            continue
+                    elif player.char_class == "Archer": # if archer skill
+                        damage = player.atk * 3
+                        enemy["hp"] -= damage
 
-                        inventory.show_inventory()
+                        print(
+                            f"Critical Shot deals "
+                            f"{damage} damage!"
+                        )
+                    
+                    player.skill_cooldown = (player.floor + 7) # skill cooldown is every 7 floors
 
-                        item_name = input("\nEquip Item: ").title()
+                #ENCYCLOPEDIA
+                elif current.action == "enemy_info":
+                    enc.encyclopedia() # encyclopedia function
+                    rotation.set_player_turn()
+                    continue
 
-                        m.equip_item(player, inventory, item_name)
+                time.sleep(1)
 
-                    # EXIT
-                    elif inv_choice == "6":
+                # CHECK IF ENEMY DEAD
+                if enemy["hp"] <= 0:
+                    print(f"\n{enemy['name']} was defeated!")
 
-                        break
+                    # gain exp based on enemies
+                    exp_gain = enemy.get("exp", 0)
+                    player.exp += exp_gain
 
-                    else:
+                    print(f"\nGained {exp_gain} EXP!")
 
-                        print("\nInvalid!")
+                    # check level up
+                    m.check_level_up(player)
 
-                continue
+                    # loot
+                    m.loot_drops(inventory)
 
-            elif current.action == "exit":
-                return "lose"
-
-            elif current.action == "enemy_info":
-
-                enc.encyclopedia()
-
-                continue
-
-            time.sleep(1)
-
-            # CHECK IF ENEMY DEAD
-            if enemy["hp"] <= 0:
-
-                print(f"\n{enemy['name']} was defeated!")
-
-                # gain exp
-                exp_gain = enemy.get("exp", 0)
-
-                player["exp"] += exp_gain
-
-                print(f"\nGained {exp_gain} EXP!")
-
-                # check level up
-                m.check_level_up(player)
-
-                # loot
-                m.loot_drops(inventory)
-
-                player["inventory"] = inventory.to_list() # save ke inventory
-
-                m.save_player(player) # player di save
-
-                return "win" # kembalikan true
+                    player.inventory = inventory.to_list() # save ke inventory
+                    m.save_player(player) # player di save
+                    return "win" # kembalikan true
 
             # ENEMY TURN
-            print(f"\n{enemy['name']}'s Turn")
+            elif turn == "enemy":
 
-            action = m.enemy_action(enemy["tier"]) # aksi musuh pakai fungsi dari mekanik berdasarkan tiernya
+                print(f"\n{enemy['name']}'s Turn")
+                print("-" * 40)
 
-            print(f"{enemy['name']} used {action}!")
+                enemy_defending = False
 
-            time.sleep(1)
+                action = m.enemy_action(enemy["tier"]) # aksi musuh pakai fungsi dari mekanik berdasarkan tiernya
 
-            if action == "attack":
+                print(f"{enemy['name']} used {action}!")
 
-                player_def = player["def"]
+                time.sleep(1)
 
-                if player_defending:
+                if action == "attack": # enemy attacks
+                    player_def = player.defense
+                    if player_defending:
+                        player_def = int(player_def * 1.5)
 
-                    player_def = int(player_def * 1.5)
+                    damage = enemy["atk"] - player_def
 
-                damage = enemy["atk"] - player_def
+                    if damage < 1:
+                        damage = 1
 
-                if damage < 1:
-                    damage = 1
+                    player.hp -= damage
 
-                player["hp"] -= damage
+                    if player.hp < 0:
+                        player.hp = 0
 
-                if player["hp"] < 0:
-                    player["hp"] = 0
+                    print(f"{player.name} takes {damage} damage!")
+                    player_defending = False
 
-                print(f"{player['name']} takes {damage} damage!")
+                elif action == "defend":
+                    enemy_defending = True
+                    print(f"{enemy['name']} is Defending!")
+
+                elif action == "dodge":
+                    enemy_dodging = True
+                    print(f"{enemy['name']} dodged!")
+
+                elif action == "skill":
+                    skill_damage = enemy["atk"] * 2
+                    player.hp -= skill_damage
+                    if player.hp < 0:
+                        player.hp = 0
+
+                    print(f"{enemy['name']} used their skill!")
+                    print(f"{player.name} takes {skill_damage} damage!")
+
+                print(f"\n{enemy['name']} HP: {enemy['hp']}")
+                print(f"{player.name} HP: {player.hp}")
                 player_defending = False
-            elif action == "defend":
+                time.sleep(1)
 
-                enemy_defending = True
-
-                print(f"{enemy['name']} is Defending!")
-
-            elif action == "dodge":
-
-                enemy_dodging = True
-
-                print(f"{enemy['name']} dodged!")
-
-            elif action == "skill":
-
-                skill_damage = enemy["atk"] * 2
-
-                player["hp"] -= skill_damage
-
-                if player["hp"] < 0:
-                    player["hp"] = 0
-
-                print(f"{enemy['name']} used their skill!")
-                print(f"{player['name']} takes {skill_damage} damage!")
-
-            print(f"\n{enemy['name']} HP: {enemy['hp']}")
-            print(f"{player['name']} HP: {player['hp']}")
-
-            time.sleep(1)
-
-            # CHECK IF PLAYER IS DEAD
-            if player["hp"] <= 0:
-
-                print(f"\n{player['name']} was defeated...")
-
-                m.save_player(player)
-
-                return "lose"
+                # CHECK IF PLAYER IS DEAD
+                if player.hp <= 0:
+                    print(f"\n{player.name} was defeated...")
+                    m.save_player(player)
+                    return "lose"
 
 def random_enemy(tier): # fungsi untuk mendapatkan enemy yang random
     # random enemy name

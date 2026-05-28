@@ -1,34 +1,29 @@
-import json
-import mechanics as m
 import screen as s
-import leaderboard as lb
 import battle as b
 import floors as fl
 import inventory as inv
+import enemy_queue as eq
 
 while True:
 
-    history = b.ActionHistory()
+    history = b.ActionHistory() # mulai history aksi
 
-    player = s.main_menu()
+    player = s.main_menu() # membuat karakter
 
     if player == "exit":
-        break
+        break # kalau return exit keluar
 
-    # if menu returns nothing
-    if player is None:
-        continue
+    if player is None: 
+        continue # kalau return none lanjut
 
     s.clear_terminal()
 
-    inventory = inv.Inventory()
+    inventory = inv.Inventory() # init inventory
 
-    for item in player["inventory"]:
+    for item in player.inventory:
         inventory.add_item(item, False)
 
-    root = fl.FloorNode(
-        player["floor"],
-        fl.get_tier(player["floor"])
-    )
-
-    fl.floor_system(player, root, history, inventory)
+    root = fl.FloorNode(player.floor,fl.get_tier(player.floor)) # mulai root untuk lantai
+    enemy_queue = eq.EnemyQueue() # mulai enemy queue
+    
+    fl.floor_system(player, root, history, inventory, enemy_queue)

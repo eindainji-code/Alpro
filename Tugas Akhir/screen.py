@@ -1,8 +1,8 @@
-import random
 import json
 import os
 import time
 import mechanics as m
+from character import Character
 
 with open('data/classes.json', 'r') as f: 
     classes = json.load(f) # mengambil data dalam classes.json
@@ -19,27 +19,23 @@ def clear_terminal():
 
 def loading():
     print("\nLoading", end="")
-
     for _ in range(3):
         time.sleep(0.5)
         print(".", end="")
-
     print()
 
 def Stats(player):
     clear_terminal()
 
     print("=== PLAYER INFO ===")
-
-    print(f"Name        : {player['name']}")
-    print(f"Class       : {player['class']}")
-    print(f"HP          : {player['hp']}")
-    print(f"ATK         : {player['atk']}")
-    print(f"DEF         : {player['def']}")
-    print(f"LEVEL       : {player['level']}")
-    print(f"EXP         : {player['exp']}")
-
-    print("\nPress ENTER to go back.")
+    print(f"Name        : {player.name}")
+    print(f"Class       : {player.char_class}")
+    print(f"HP          : {player.hp}")
+    print(f"ATK         : {player.atk}")
+    print(f"DEF         : {player.defense}")
+    print(f"LEVEL       : {player.level}")
+    print(f"EXP         : {player.exp}")
+    input("\nPress ENTER to go back.")
 
 def Inventory(player):
     clear_terminal()
@@ -50,16 +46,14 @@ def Inventory(player):
     else:
         number = 1
 
-        for item in player["inventory"]:
+        for item in player.inventory:
             print(f"{number}. {item}")
             number += 1
 
     print("\nPress ENTER to go back.")
 
 def main_menu():
-
     print("\n=== Welcome to Hero's Journey ===\n")
-    
     while True:
         print("=== MAIN MENU ===")
         print("1. New Game")
@@ -72,7 +66,6 @@ def main_menu():
         clear_terminal()
 
         if not choice.isdigit():
-
             print("\nPlease enter a number!")
             continue
 
@@ -83,15 +76,18 @@ def main_menu():
 
             if player is None:
                 return None
-
-            print(f"\nWelcome {player['name']}")
+                  
+            print(f"\nWelcome {player.name}")
             return player
 
         elif choice == 2:
             player = m.load_player()
 
+            if player is None:
+                return None
+            
             if player:
-                print(f"\nLoaded {player["name"]}")
+                print(f"\nLoaded {player.name}")
                 return player
             
         elif choice == 3:
@@ -108,43 +104,31 @@ def main_menu():
         else:
             print("\nInvalid\n")
 
-def Character_Creator(name, chosen_class): # fungsi untuk membuat karakter
-    data = classes[chosen_class] # mengambil data dari class yang dipilih
+def Character_Creator(name, chosen_class):
+    data = classes[chosen_class]
+    player = Character(
+        name,
+        chosen_class,
+        data["hp"],
+        data["atk"],
+        data["def"],
+        data["skill"]
+    )
 
-    player = {
-        "name": name,
-        "class": chosen_class,
-        "hp": data["hp"],
-        "max_hp": data["hp"],
-        "atk": data["atk"],
-        "def": data["def"],
-        "skill": data["skill"],
-        "character_level" : 1,
-        "exp": 0,
-        "floor": 1,
-        "inventory": [],
-        "equipped_item": None
-    } 
-    
-    return player #mengambilkan sebuah dict player
+    return player
 
 def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
-
     clear_terminal()
-
     nama = input("Masukkan nama: ")
 
     if not nama.strip():
-
         print("\nName cannot be empty!")
         time.sleep(1)
 
         return None
 
     print("=== ALL CHARACTERS ===\n")
-
     for i, name_class in enumerate(classes): #looping semua class
-
         data = classes[name_class]
 
         print(f"{i+1}. {name_class}") # mengeprint stat semua class
@@ -158,7 +142,6 @@ def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
 
     # number validation
     if not choice.isdigit():
-
         print("\nInvalid input!")
         return None
 
@@ -166,7 +149,6 @@ def Choosing(): # fungsi untuk memilih karakter dan menamakan karakter
 
     # range validation
     if choice < 1 or choice > len(classes):
-
         print("\nClass isn't available!")
         return None
 
