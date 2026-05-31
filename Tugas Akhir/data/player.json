@@ -1,19 +1,18 @@
 [
     {
         "name": "Danish",
-        "class": "Test",
-        "hp": 100,
-        "max_hp": 100,
-        "atk": 100,
-        "def": 100,
-        "skill": "Stupid strong",
+        "class": "Archer",
+        "hp": 20,
+        "max_hp": 20,
+        "atk": 14,
+        "def": 6,
+        "skill": "critical shot",
         "cooldown": 0,
         "character_level": 1,
-        "exp": 20,
-        "floor": 2,
-        "inventory": [
-            "straight limb longbow"
-        ],
-        "equipped_item": null
+        "exp": 0,
+        "floor": 1,
+        "inventory": [],
+        "equipped_item": null,
+        "discovered_enemies": []
     }
 ]

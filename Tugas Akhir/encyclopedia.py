@@ -5,6 +5,18 @@ import os
 with open("data/enemies.json", "r") as f:
     enemies = json.load(f)
 
+enemy_graph = {
+    "Slime": ["Goblin", "Gnome"],
+    "Goblin": ["Wolf"],
+    "Gnome": ["Wolf"],
+    "Wolf": ["Skeleton", "Zombie"],
+    "Skeleton": ["Minotaur"],
+    "Zombie": ["Minotaur"],
+    "Minotaur": ["Dragon"],
+    "Basilisk": ["Dragon"],
+    "Nemean Lion": ["Fenrir"]
+}
+
 def flatten(data: dict) -> list:
     #Mengubah nested enemies.json menjadi list flat agar mudah di search dan di sort
     result = []
@@ -94,7 +106,14 @@ def display_enemy(enemy: dict):
     print(f"  │  DEF : {enemy['def']}")
     print(f"  └─────────────────────────")
  
- 
+def show_related(enemy_name):
+    if enemy_name not in enemy_graph:
+        return
+
+    print("\nRelated Enemies:")
+    for related in enemy_graph[enemy_name]:
+        print(f"- {related}")
+
 def display_results(results: list, query: str, algo: str):
     print(f"\n[{algo}] Result \"{query}\":")
  
@@ -146,6 +165,7 @@ def encyclopedia():
         print(f"\n[Binary Search] Result \"{query}\" (exact match):")
         if binary_result:
             display_enemy(binary_result)
+            show_related(binary_result["name"])
         else:
             print("Enemy not found (use full name for binary search).")
  

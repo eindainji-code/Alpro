@@ -59,6 +59,7 @@ class ActionHistory: # doubly linked list
         print("\n=== Battle Start ===\n")
         time.sleep(0.25)
         print(f"{enemy["name"]} appeared!")
+        player.discovered_enemies.add(enemy["name"])
 
         # circular linked list
         rotation = tr.TurnRotation() # dengan CLL mulai rotasi
@@ -88,8 +89,16 @@ class ActionHistory: # doubly linked list
                 print("6. Stats")
                 print("7. Exit")
 
+                valid_choices = {"1", "2", "3", "4", "5", "6", "7"}
+
                 choice = input("Choose Action: ") # pilih aksi
                 s.clear_terminal()
+                
+                if choice not in valid_choices:
+                    print("\nInvalid!")
+                    rotation.set_player_turn()
+                    continue
+
                 # convert menu ke action
                 if choice == "1":
                     action = "attack"
@@ -111,11 +120,6 @@ class ActionHistory: # doubly linked list
 
                 elif choice == "7":
                     action = "exit"
-                    
-                else:
-                    print("\nInvalid!")
-                    rotation.set_player_turn()
-                    continue # continue supaya jika pilih salah, bisa pilih lagi
 
                 # simpan action ke doubly linked list
                 self.add_action(action)
@@ -321,8 +325,18 @@ class ActionHistory: # doubly linked list
 
                 #ENCYCLOPEDIA
                 elif current.action == "enemy_info":
-                    enc.encyclopedia() # encyclopedia function
+                    print("\n=== DISCOVERED ENEMIES ===")
+
+                    if len(player.discovered_enemies) == 0:
+                        print("No enemies discovered yet.")
+
+                    else:
+                        for enemy_name in sorted(player.discovered_enemies):
+                            print(f"- {enemy_name}")
+
+                    input("\nPress ENTER to return...")
                     rotation.set_player_turn()
+                    s.clear_terminal()
                     continue
 
                 time.sleep(1)

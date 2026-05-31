@@ -3,6 +3,7 @@ import os
 import time
 import mechanics as m
 from character import Character
+import encyclopedia as enc
 
 with open('data/classes.json', 'r') as f: 
     classes = json.load(f) # mengambil data dalam classes.json
@@ -58,8 +59,9 @@ def main_menu():
         print("=== MAIN MENU ===")
         print("1. New Game")
         print("2. Load Game")
-        print("3. Leaderboard")
-        print("4. Exit")
+        print("3. Encyclopedia")
+        print("4. Leaderboard")
+        print("5. Exit")
 
         choice = input("Please choose: ")
 
@@ -91,13 +93,18 @@ def main_menu():
                 return player
             
         elif choice == 3:
+            enc.encyclopedia()
+            input("\nPress ENTER to go back!")
+            clear_terminal()
+            
+        elif choice == 4:
             import leaderboard as lb
             players = lb.load_players()
             lb.display_lb(players)
             input("\nPress ENTER to go back.")
             clear_terminal()
 
-        elif choice == 4:
+        elif choice == 5:
             print("\nGoodbye")
             return "exit"
 

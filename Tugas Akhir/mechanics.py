@@ -77,12 +77,15 @@ equipment_stats = {
     "artemis's bow": {"atk": 20}
 }
 
-scavenge_exp = {
-    "common": 10,
-    "uncommon": 20,
-    "rare": 40,
-    "legendary": 80
-} # value jumlah exp item berdasarkan rarity
+RARITY_EXP = (
+    ("common", 10),
+    ("uncommon", 20),
+    ("rare", 50),
+    ("legendary", 100)
+)
+
+with open("data/loot.json", "r") as f:
+    loot = json.load(f) # value jumlah exp item berdasarkan rarity
 
 def loot_drops(inventory): # fungsi untuk barang yang jatuh dari enemy
     drop_chance = 0.45
@@ -317,7 +320,6 @@ def get_item_rarity(item_name):
     return None
 
 def scavenge_item(player, inventory, item_name):
-
     # item exists?
     found_item = inventory.search_item(item_name)
 
@@ -330,10 +332,17 @@ def scavenge_item(player, inventory, item_name):
         print("\nItem rarity not found!")
         return
 
-    gained_exp = scavenge_exp[rarity]
+    gained_exp = 0
+
+    for rarity_name, exp in RARITY_EXP:
+        if rarity == rarity_name:
+            gained_exp = exp
+            break
 
     player.exp += gained_exp
+
     check_level_up(player)
+
     inventory.remove_item(item_name)
 
     print(f"\nScavenged {item_name}!")

@@ -14,6 +14,7 @@ class Character:
         self.floor = 1
         self.inventory = []
         self.equipped_item = None
+        self.discovered_enemies = set()
 
     def to_dict(self): # turns it into a dictionary
         return {
@@ -29,7 +30,8 @@ class Character:
             "exp": self.exp,
             "floor": self.floor,
             "inventory": self.inventory,
-            "equipped_item": self.equipped_item
+            "equipped_item": self.equipped_item,
+            "discovered_enemies": list(self.discovered_enemies)
         }
     
     @classmethod
@@ -50,5 +52,6 @@ class Character:
         player.floor = data["floor"]
         player.inventory = data["inventory"]
         player.equipped_item = data["equipped_item"]
+        player.discovered_enemies = set(data.get("discovered_enemies", []))
 
         return player
