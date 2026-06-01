@@ -60,7 +60,16 @@ def _compare(a: dict, b: dict) -> int:
         return a.get("character_level", 1) - b.get("character_level", 1)
     
     #Kriteria ketiga: EXP
-    return a.get("exp", 0) - b.get("exp", 0)
+    if a.get("exp", 0) != b.get("exp", 0):
+        return a.get("exp", 0) - b.get("exp", 0)
+
+    if a.get("name", "") < b.get("name", ""):
+        return 1
+
+    if a.get("name", "") > b.get("name", ""):
+        return -1
+
+    return 0
 
 #ALGORITMA MERGE SORT: UNTUK DATA LEBIH BESAR AGAR LEBIH EFISIEN
 

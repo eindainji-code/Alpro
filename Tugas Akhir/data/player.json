@@ -1,6 +1,6 @@
 [
     {
-        "name": "Danish",
+        "name": "Ganish",
         "class": "Archer",
         "hp": 20,
         "max_hp": 20,
@@ -8,9 +8,47 @@
         "def": 6,
         "skill": "critical shot",
         "cooldown": 0,
+        "character_level": 2,
+        "exp": 20,
+        "floor": 4,
+        "inventory": [],
+        "equipped_item": null,
+        "discovered_enemies": []
+    },
+    {
+        "name": "Farah",
+        "class": "Knight",
+        "hp": 32,
+        "max_hp": 32,
+        "atk": 11,
+        "def": 10,
+        "skill": "protect",
+        "cooldown": 0,
+        "character_level": 2,
+        "exp": 20,
+        "floor": 4,
+        "inventory": [
+            "bandage"
+        ],
+        "equipped_item": null,
+        "discovered_enemies": [
+            "Slime",
+            "Gnome",
+            "Goblin"
+        ]
+    },
+    {
+        "name": "Fasbir",
+        "class": "Barbarian",
+        "hp": 22,
+        "max_hp": 22,
+        "atk": 10,
+        "def": 8,
+        "skill": "rage",
+        "cooldown": 0,
         "character_level": 1,
         "exp": 0,
-        "floor": 1,
+        "floor": 4,
         "inventory": [],
         "equipped_item": null,
         "discovered_enemies": []

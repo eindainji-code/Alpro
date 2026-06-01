@@ -8,10 +8,10 @@ import turn_rotation as tr
 
 #Hash table untuk data healing
 item_data = {
-    "Potion": {"heal": 20},
-    "Bandage": {"heal": 10},
-    "Syringe": {"heal": 35},
-    "Witches Brew": {"heal": 50}
+    "potion": {"heal": 20},
+    "bandage": {"heal": 10},
+    "syringe": {"heal": 35},
+    "witches brew": {"heal": 50}
 }
 
 with open("data/enemies.json", "r") as f:
